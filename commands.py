@@ -57,10 +57,12 @@ async def load_commands(msg, cha, par, client):
                 try:
                     reaction, user = await client.wait_for('reaction_add', timeout=60*60*24, check=check)
                 except asyncio.TimeoutError:
+                    await msg.author.send('Timed out friend request')
                     await member.send('Timed out friend request')
                     return
                 else:
-                    await member.send(f'Accepted friend request, you and {str(msg.author)} are now friends')
+                    await msg.author.send(f'Accepted friend request, {str(member)} and {str(msg.author)} are now friends')
+                    await member.send(f'Accepted friend request, {str(member)} and {str(msg.author)} are now friends')
 
 
                 files.user_exists(member)
@@ -88,7 +90,7 @@ async def load_commands(msg, cha, par, client):
                     await cha.send('You are already friends!')
 
                 await cha.send(f'Invite sent to {str(member)}')
-                friend_msg = await cha.send(f'{member.mention}, {msg.author} wants to add you to their friendlist so that you can send each other alarms. React with ✅ to accept.')
+                friend_msg = await member.send(f'{member.mention}, {msg.author} wants to add you to their friendlist so that you can send each other alarms. React with ✅ to accept.')
                 await friend_msg.add_reaction('✅')
 
                 def check(r, user):
@@ -98,10 +100,12 @@ async def load_commands(msg, cha, par, client):
                 try:
                     reaction, user = await client.wait_for('reaction_add', timeout=60 * 60 * 24, check=check)
                 except asyncio.TimeoutError:
-                    await cha.send('Timed out friend request')
+                    await msg.author.send('Timed out friend request')
+                    await member.send('Timed out friend request')
                     return
                 else:
-                    await cha.send(f'Accepted friend request, {str(member)} and {str(msg.author)} are now friends')
+                    await msg.author.send(f'Accepted friend request, {str(member)} and {str(msg.author)} are now friends')
+                    await member.send(f'Accepted friend request, {str(member)} and {str(msg.author)} are now friends')
 
                 files.user_exists(member)
 
@@ -129,9 +133,11 @@ async def load_commands(msg, cha, par, client):
 
         if member is None:
             await cha.send(f'Member {par[2]} not found')
+            return
 
         if member.id not in user_data['friends']:
             await cha.send(f'Member {str(member)} not in your friendlist, use ``rem friend <user>``')
+            return
 
         user_data = files.load_user(member.id)
 

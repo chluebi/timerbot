@@ -15,7 +15,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print('logged in')
-    me = client.get_user(184682395553759233)
+    me = client.get_user(load_config()['author'])
     await me.send('logged in')
     print(client.users)
     await main_loop(client)
@@ -28,7 +28,7 @@ async def on_message(message):
     cha = msg.channel
     par = parser_local.parse_message(message.content)
     if par[0] == 'rem':
-        await commands.load_commands(msg, cha, par, client)
+        await commands.load_commands(msg, msg.author, par, client)
 
 
 
